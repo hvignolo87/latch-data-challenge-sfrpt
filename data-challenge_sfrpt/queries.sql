@@ -1,4 +1,4 @@
--- How many burglaries occurred in the South of Market neighborhood between 2018-05-01 and 2018-05-31 inclusive?
+-- 1. How many burglaries occurred in the South of Market neighborhood between 2018-05-01 and 2018-05-31 inclusive?
 SELECT COUNT(*) AS num_burglaries
 FROM crimes
 WHERE analysis_neighborhood = 'South of Market'
@@ -21,7 +21,7 @@ LIMIT 5;
 
 
 -- 3. Which police district has the most open/active incidents? Which has the fewest?
--- Most
+-- 3.1 Most
 SELECT
     police_district
     , COUNT(*) AS num_open_or_active_incidents
@@ -31,7 +31,7 @@ GROUP BY 1
 ORDER BY 2 DESC
 LIMIT 1;
 
--- Fewest
+-- 3.2 Fewest
 SELECT
     police_district
     , COUNT(*) AS num_open_or_active_incidents

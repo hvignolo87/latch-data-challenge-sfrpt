@@ -62,7 +62,7 @@ def loader():
     df.to_sql(
         name="crimes",
         con=conn,
-        if_exists="replace",
+        if_exists="append",
         index=False,
         dtype=dtypes,
     )
