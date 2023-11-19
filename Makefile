@@ -10,6 +10,13 @@ else
     DOCKER_COMPOSE_CMD = docker-compose $(COMPOSE_FILE_OPT)
 endif
 
+ifneq ($(wildcard ./.env),)
+include ./.env
+else
+warning_msg:
+$(warning There's no .env file)
+endif
+
 _GREEN='\033[0;32m'
 _NC='\033[0m'
 
@@ -99,7 +106,7 @@ stop: ## Stop docker-defined services, can be passed specific service(s) to only
 .PHONY: down
 down: ## Delete docker-defined services, can be passed specific service(s) to only delete those. Usage: make down services="postgres"
 	$(call log, Deleting services $(services)...)
-	$(DOCKER_COMPOSE_CMD) down $(services)
+	$(DOCKER_COMPOSE_CMD) down $(services) --volumes
 
 .PHONY: clean
 clean: down ## Delete containers and volumes
@@ -110,3 +117,12 @@ clean: down ## Delete containers and volumes
 prune: ## Delete everything in docker
 	$(call log, Deleting everything...)
 	docker system prune --all --volumes --force && docker volume prune --all --force
+
+
+##@ Challenge-related commands
+
+.PHONY: analytics-1
+analytics-1: ## Run the first analytics query
+	$(call log, Running the first analytics query...)
+	export $$(grep -v '^#' ./.env | xargs) && \
+	$(DOCKER_COMPOSE_CMD) exec -T postgres psql --username "${POSTGRES_USER}" --dbname "${POSTGRES_DB}"
