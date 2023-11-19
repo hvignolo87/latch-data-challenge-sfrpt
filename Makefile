@@ -10,6 +10,13 @@ else
     DOCKER_COMPOSE_CMD = docker-compose $(COMPOSE_FILE_OPT)
 endif
 
+ifneq ($(wildcard ./.env),)
+include ./.env
+else
+warning_msg:
+$(warning There's no .env file)
+endif
+
 _GREEN='\033[0;32m'
 _NC='\033[0m'
 
@@ -110,3 +117,11 @@ clean: down ## Delete containers and volumes
 prune: ## Delete everything in docker
 	$(call log, Deleting everything...)
 	docker system prune --all --volumes --force && docker volume prune --all --force
+
+
+##@ Challenge-related
+
+.PHONY: execute-sql
+execute-sql: ## Execute a SQL command inside the PostgreSQL service. Usage: make execute-sql
+	$(call log, Spawning a psql shell...)
+	docker exec -it postgres psql --username ${POSTGRES_USER} --dbname ${POSTGRES_DB}
